@@ -39,14 +39,14 @@
 
 <property>
   <name>hive.in.test</name>
-  <value>true</value>
+  <value>false</value>
   <description>Internal marker for test. Used for masking env-dependent values</description>
 </property>
 
 <!-- Properties for test folders -->
 <property>
   <name>mapreduce.jobtracker.staging.root.dir</name>
-  <value>${test.tmp.dir}/cli/mapred/staging</value>
+  <value>${TEST_TMP_DIR}/cli/mapred/staging</value>
 </property>
 
 <!-- Hive Configuration can either be stored in this file or in the hadoop configuration files  -->
@@ -58,7 +58,7 @@
 <!-- Hive Execution Parameters -->
 <property>
   <name>hadoop.tmp.dir</name>
-  <value>${test.tmp.dir}/hadoop-tmp</value>
+  <value>${TEST_TMP_DIR}/hadoop-tmp</value>
   <description>A base for other temporary directories.</description>
 </property>
 
@@ -72,13 +72,13 @@
 
 <property>
   <name>hive.exec.scratchdir</name>
-  <value>${test.tmp.dir}/scratchdir</value>
+  <value>${TEST_TMP_DIR}/scratchdir</value>
   <description>Scratch space for Hive jobs</description>
 </property>
 
 <property>
   <name>hive.exec.local.scratchdir</name>
-  <value>${test.tmp.dir}/localscratchdir/</value>
+  <value>${TEST_TMP_DIR}/localscratchdir/</value>
   <description>Local scratch space for Hive jobs</description>
 </property>
 
@@ -99,34 +99,34 @@
 
 <property>
   <name>javax.jdo.option.ConnectionURL</name>
-  <value>jdbc:derby:memory:${test.tmp.dir}/junit_metastore_db;create=true</value>
+  <value>${HIVE_DB_CONNECTION_URL}</value>
 </property>
 
 <property>
   <name>javax.jdo.option.ConnectionDriverName</name>
-  <value>org.apache.derby.jdbc.EmbeddedDriver</value>
+  <value>${HIVE_DB_DRIVER}</value>
 </property>
 
 <property>
   <name>javax.jdo.option.ConnectionUserName</name>
-  <value>APP</value>
+  <value>${HIVE_DB_USER}</value>
 </property>
 
 <property>
   <name>javax.jdo.option.ConnectionPassword</name>
-  <value>mine</value>
+  <value>${HIVE_DB_PASS}</value>
 </property>
 
 <property>
   <!--  this should eventually be deprecated since the metastore should supply this -->
   <name>hive.metastore.warehouse.dir</name>
-  <value>${test.warehouse.dir}</value>
+  <value>${TEST_WAREHOUSE_DIR}</value>
   <description></description>
 </property>
 
 <property>
   <name>hive.metastore.metadb.dir</name>
-  <value>file://${test.tmp.dir}/metadb/</value>
+  <value>file://${TEST_TMP_DIR}/metastore/</value>
   <description>
   Required by metastore server or if the uris argument below is not supplied
   </description>
@@ -134,25 +134,25 @@
 
 <property>
   <name>test.log.dir</name>
-  <value>${test.tmp.dir}/log/</value>
+  <value>${TEST_TMP_DIR}/log/</value>
   <description></description>
 </property>
 
 <property>
   <name>test.data.files</name>
-  <value>${hive.root}/data/files</value>
+  <value>${HIVE_ROOT}/data/files</value>
   <description></description>
 </property>
 
 <property>
   <name>test.data.scripts</name>
-  <value>${hive.root}/data/scripts</value>
+  <value>${HIVE_ROOT}/data/scripts</value>
   <description></description>
 </property>
 
 <property>
   <name>hive.jar.path</name>
-  <value>${maven.local.repository}/org/apache/hive/hive-exec/${hive.version}/hive-exec-${hive.version}.jar</value>
+  <value>${MAVEN_LOCAL_REPOSITORY}/org/apache/hive/hive-exec/${HIVE_VERSION}/hive-exec-${HIVE_VERSION}.jar</value>
   <description></description>
 </property>
 
@@ -164,21 +164,21 @@
 
 <property>
   <name>hive.querylog.location</name>
-  <value>${test.tmp.dir}/tmp</value>
+  <value>${TEST_TMP_DIR}/tmp</value>
   <description>Location of the structured hive logs</description>
 </property>
 
-<property>
+<!-- <property>
   <name>hive.exec.pre.hooks</name>
   <value>org.apache.hadoop.hive.ql.hooks.PreExecutePrinter, org.apache.hadoop.hive.ql.hooks.EnforceReadOnlyTables, org.apache.hadoop.hive.ql.hooks.MaterializedViewRegistryPropertiesHook</value>
   <description>Pre Execute Hook for Tests</description>
-</property>
-
+</property> -->
+<!--
 <property>
   <name>hive.exec.post.hooks</name>
   <value>org.apache.hadoop.hive.ql.hooks.PostExecutePrinter</value>
   <description>Post Execute Hook for Tests</description>
-</property>
+</property> -->
 
 <property>
   <name>hive.support.concurrency</name>
@@ -207,7 +207,7 @@
 
 <property>
   <name>hive.exec.mode.local.auto</name>
-  <value>false</value>
+  <value>true</value>
   <description>
     Let hive determine whether to run in local mode automatically
     Disabling this for tests so that minimr is not affected
@@ -279,7 +279,7 @@
 
 <property>
   <name>test.var.hiveconf.property</name>
-  <value>${hive.exec.default.partition.name}</value>
+  <value>${HIVE_EXEC_DEFAULT_PARTITION_NAME}</value>
   <description>Test hiveconf property substitution</description>
 </property>
 
@@ -302,12 +302,6 @@
 <property>
   <name>hive.users.in.admin.role</name>
   <value>hive_admin_user</value>
-</property>
-
-<property>
-  <name>hive.security.authorization.manager</name>
-  <value>org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactoryForTest</value>
-  <description>The Hive client authorization manager class name.</description>
 </property>
 
 <property>
@@ -401,16 +395,71 @@
 </property>
 
 <property>
-  <name>hive.security.authorization.managers</name>
-  <value>org.apache.hadoop.hive.ql.security.authorization.DefaultHiveAuthorizationProvider</value>
+  <name>hive.security.authorization.manager</name>
+  <value>org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizerFactory</value>
+  <description>The Hive client authorization manager class name.</description>
+</property>
+
+
+<property>
+  <name>hive.security.authenticator.manager</name>
+  <value>org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator</value>
   <description></description>
 </property>
 
 <property>
   <name>hive.security.authorization.enabled</name>
-  <value>false</value>
+  <value>true</value>
   <description></description>
 </property>
 
+<property>
+  <name>hive.exec.scratchdir</name>
+  <value>/tmp/hive-${USER_NAME}</value>
+</property>
+
+<property>
+  <name>hive.exec.local.scratchdir</name>
+  <value>/tmp/${USER_NAME}</value>
+</property>
+
+<property>
+  <name>hive.downloaded.resources.dir</name>
+  <value>/tmp/${USER_NAME}_resources</value>
+</property>
+
+<property>
+  <name>hive.scratch.dir.permission</name>
+  <value>733</value>
+</property>
+
+<property>
+    <name>metastore.metastore.event.db.notification.api.auth</name>
+    <value>false</value>
+</property>
+
+<property>
+    <name>hive.server2.support.dynamic.service.discovery</name>
+    <value>true</value>
+    <description>Set to true to enable HiveServer2 dynamic service discovery for its clients</description>
+</property>
+
+<property>
+    <name>hive.server2.zookeeper.namespace</name>
+    <value>hiveserver2</value>
+    <description>The parent node in ZooKeeper used by HiveServer2 when supporting dynamic service discovery.</description>
+</property>
+
+<property>
+    <name>hive.zookeeper.quorum</name>
+    <value>localhost</value>
+    <description>List of ZooKeeper servers to talk to. Used in connection string by JDBC/ODBC clients instead of URI of specific HiveServer2 instance.</description>
+</property>
+
+<property>
+    <name>hive.zookeeper.client.port</name>
+    <value>2181</value>
+    <description></description>
+</property>
 
 </configuration>
