@@ -1,6 +1,5 @@
 FROM gentijo/hadoop
 
-
 # Allow buildtime config of HIVE_VERSION
 # Set HIVE_VERSION from arg if provided at build, env if provided at run, or default
 # https://docs.docker.com/engine/reference/builder/#using-arg-variables
@@ -14,7 +13,6 @@ ENV PATH $HIVE_HOME/bin:$PATH
 
 RUN mkdir -p /opt/hive_temp
 ENV TEST_TEMP_DIR=/opt/hive_temp
-
 
 RUN mkdir -p /opt/hive_warehouse
 ENV TEST_WAREHOUSE_DIR=/opt/hive_warehouse
@@ -39,25 +37,6 @@ RUN addgroup hive
 RUN addgroup hadoop
 RUN adduser --ingroup hive hive
 RUN usermod -a -G hadoop hive
-
-#ENV POSTGRES_VERSION=11
-#ENV POSTGRES_BIN=/usr/lib/postgresql/${POSTGRES_VERSION}/bin
-#ENV POSTGRES_DATA=/usr/local/postgres
-
-#WORKDIR ${POSTGRES_BIN}
-#RUN mkdir -p ${POSTGRES_DATA}
-#RUN chown postgres.postgres ${POSTGRES_DATA}
-#RUN chmod a+rwx ${POSTGRES_DATA}
-
-#RUN mkdir -p ${POSTGRES_DATA}/data
-#RUN chown postgres.postgres ${POSTGRES_DATA}/data
-#RUN chmod a+rwx ${POSTGRES_DATA}/data
-
-#RUN mkdir -p ${POSTGRES_DATA}/logs
-#RUN chown postgres.postgres ${POSTGRES_DATA}/logs
-#RUN chmod a+rwx ${POSTGRES_DATA}/data
-
-#ENV PATH=${PATH}:${POSTGRES_BIN}
 
 WORKDIR /opt
 COPY bin/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz /opt
@@ -94,17 +73,10 @@ ADD conf/hive-log4j2.properties $HIVE_HOME/conf
 ADD conf/ivysettings.xml $HIVE_HOME/conf
 ADD conf/llap-daemon-log4j2.properties $HIVE_HOME/conf
 
-COPY hive_startup.sh /usr/local/bin/hive_startup.sh
-RUN chmod +x /usr/local/bin/hive_startup.sh
-
-COPY hive_initdb.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/hive_initdb.sh
-
-#COPY hive_entrypoint.sh /usr/local/bin/hive_entrypoint.sh
-#RUN chmod +x /usr/local/bin/hive_entrypoint.sh
+COPY hive_entrypoint.sh ${HIVE_HOME}/bin/hive_entrypoint.sh
+RUN chmod +x ${HIVE_HOME}/bin/hive_entrypoint.sh
 
 EXPOSE 10000
 EXPOSE 10002
 
-#ENTRYPOINT ["/usr/local/bin/hive_entrypoint.sh"]
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT ["/opt/hive/bin/hive_entrypoint.sh"]
