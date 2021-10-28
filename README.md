@@ -2,8 +2,13 @@
 # docker-hive
 
 This is a docker container for Apache Hive 3.1.2.
+Hadoop 3.3.1
+Zookeeper 3.7.0
+OpenJDK 8
 
-It is based on gentijo/hadoop-single
+Depends on Postgresql
+
+It is based on gentijo/hadoop
 This deploys Hive and starts a hiveserver2 on port 10000.
 Metastore is running with a connection to postgresql database.
 The hive configuration is performed with HIVE_SITE_CONF_ variables (see hadoop-hive.env for an example).
@@ -22,3 +27,4 @@ Then query it from PrestoDB. You can get [presto.jar](https://prestosql.io/docs/
   $ ./presto.jar --server localhost:8080 --catalog hive --schema default
   presto> select * from pokes;
 ```
+https://github.com/gentijo/docker-hive

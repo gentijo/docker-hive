@@ -1,4 +1,4 @@
-FROM gentijo/hadoop
+FROM gentijo/hadoop:v0.1
 
 # Allow buildtime config of HIVE_VERSION
 # Set HIVE_VERSION from arg if provided at build, env if provided at run, or default
